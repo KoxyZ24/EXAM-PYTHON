@@ -1,0 +1,8 @@
+[
+  {"shape": "square", "x": 0, "y": 40, "cote": 60, "color": [125, 85, 60]},
+  {"shape": "line", "x1": 0, "y1": 40, "x2": 30, "y2": 10, "color": [217, 72, 59]},
+  {"shape": "line", "x1": 30, "y1": 10, "x2": 60, "y2": 40, "color": [217, 72, 59]},
+  {"shape": "rectangle", "x": 24, "y": 72, "width": 12, "height": 28, "color": [240, 180, 41]},
+  {"shape": "square", "x": 7, "y": 50, "cote": 12, "color": [59, 91, 219]},
+  {"shape": "square", "x": 41, "y": 50, "cote": 12, "color": [59, 91, 219]}
+]

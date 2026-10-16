@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tableau interactif</title>
+<style>
+  body { font-family: sans-serif; background: #f3f1ec; display: flex; flex-direction: column; align-items: center; }
+  canvas { background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+  #infos { color: #555; margin: 8px; }
+</style>
+</head>
+<body>
+  <h1>Tableau interactif</h1>
+  <canvas id="tableau" width="800" height="500"></canvas>
+  <p id="infos">Connexion… · position : -</p>
+
+<script>
+const canvas = document.getElementById("tableau");
+const ctx = canvas.getContext("2d");
+const infos = document.getElementById("infos");
+let etat = "Connexion…";
+
+function couleur(c) {
+  return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+}
+
+function dessiner(f) {
+  if (f.shape === "clear") {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  ctx.strokeStyle = couleur(f.color);
+  ctx.fillStyle = couleur(f.color);
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  if (f.shape === "point") {
+    ctx.arc(f.x, f.y, 4, 0, 2 * Math.PI);
+    ctx.fill();
+  } else if (f.shape === "line") {
+    ctx.moveTo(f.x1, f.y1);
+    ctx.lineTo(f.x2, f.y2);
+    ctx.stroke();
+  } else if (f.shape === "circle") {
+    ctx.arc(f.x, f.y, f.radius, 0, 2 * Math.PI);
+    ctx.stroke();
+  } else if (f.shape === "rectangle") {
+    ctx.strokeRect(f.x, f.y, f.width, f.height);
+  } else if (f.shape === "square") {
+    ctx.strokeRect(f.x, f.y, f.cote, f.cote);
+  }
+}
+
+// Connexion WebSocket au serveur (même adresse que la page)
+const ws = new WebSocket(`ws://${location.host}/ws`);
+ws.onopen = () => { etat = "Connecté"; infos.textContent = etat; };
+ws.onclose = () => { etat = "Déconnecté du serveur"; infos.textContent = etat; };
+ws.onmessage = (e) => dessiner(JSON.parse(e.data));
+
+// Affiche la position de la souris : pratique pour choisir les coordonnées dans le client
+canvas.addEventListener("mousemove", (e) => {
+  infos.textContent = `${etat} · position : x=${e.offsetX}, y=${e.offsetY}`;
+});
+</script>
+</body>
+</html>
